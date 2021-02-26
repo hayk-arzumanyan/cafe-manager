@@ -1,4 +1,4 @@
-package com.task.cafemanager.facade.security.model;
+package com.task.cafemanager.api.facade.security.model;
 
 import com.task.cafemanager.data.entities.enums.Role;
 import org.springframework.security.core.GrantedAuthority;

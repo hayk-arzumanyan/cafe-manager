@@ -2,7 +2,7 @@ package com.task.cafemanager.services.user.impl;
 
 import com.task.cafemanager.data.entities.User;
 import com.task.cafemanager.data.repositories.UserRepository;
-import com.task.cafemanager.facade.security.model.MyUserDetails;
+import com.task.cafemanager.api.facade.security.model.MyUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

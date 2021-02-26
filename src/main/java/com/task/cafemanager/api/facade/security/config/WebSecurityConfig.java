@@ -1,4 +1,4 @@
-package com.task.cafemanager.facade.security.config;
+package com.task.cafemanager.api.facade.security.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

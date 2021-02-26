@@ -1,4 +1,4 @@
-package com.task.cafemanager.facade.config;
+package com.task.cafemanager.api.facade.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

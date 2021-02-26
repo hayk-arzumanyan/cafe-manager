@@ -47,4 +47,4 @@ CREATE TABLE IF NOT EXISTS public."user" (
 CREATE SEQUENCE IF NOT EXISTS user_sequence INCREMENT BY 50;
 
 INSERT INTO "user" (id, username, first_name, last_name, password_hash, role)
-VALUES (1, 'ahayk', 'Hayk', 'Arzumanyan', '$2a$12$tfOHcNggyD6xxnqk4FB6suJ0KiJlS0vy0uCeYy4ruu3xJNBhN2Og.', 'MANAGER')
+VALUES (-1, 'ahayk', 'Hayk', 'Arzumanyan', '$2a$12$tfOHcNggyD6xxnqk4FB6suJ0KiJlS0vy0uCeYy4ruu3xJNBhN2Og.', 'MANAGER')
