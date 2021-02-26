@@ -18,13 +18,13 @@ CREATE SEQUENCE IF NOT EXISTS product_sequence INCREMENT BY 50;
 CREATE TABLE IF NOT EXISTS public.product_in_order (
                                                        id bigint NOT NULL,
                                                        amount integer,
-                                                       order_name character varying(255),
+                                                       name character varying(255),
                                                        status character varying(255),
                                                        order_id bigint,
                                                        product_id bigint
 );
 
-CREATE SEQUENCE IF NOT EXISTS productInOrder_sequence INCREMENT BY 50;
+CREATE SEQUENCE IF NOT EXISTS product_in_order_sequence INCREMENT BY 50;
 
 CREATE TABLE IF NOT EXISTS public."order" (
                                               id bigint NOT NULL,

@@ -7,9 +7,14 @@ import java.util.List;
 
 public interface TableService {
     Table create(TableModificationRequest table);
+
     Table get(Long id);
+
     Table update(Long id, TableModificationRequest tableRequest);
+
     void delete(Long id);
+
     List<Table> getAll(Long id);
-    Table assignTable(Long id, Long userId);
+
+    void assignTable(Long id, Long userId);
 }

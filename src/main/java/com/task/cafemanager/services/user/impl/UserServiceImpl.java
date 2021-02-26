@@ -34,32 +34,35 @@ public class UserServiceImpl implements UserService {
         user.setLastName(request.getLastName());
         user.setPasswordHash(BCrypt.hashpw(request.getPasswordHash(), BCrypt.gensalt(12)));
         user.setRole(request.getRole());
-        final User result = userRepository.save(user);
-        return result;
+        return userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
     @Override
     public User get(Long id) {
         log.info("Getting user by id: {}", id);
-        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cannot find the User!"));
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot find the User!"));
     }
 
     @Transactional(readOnly = true)
     @Override
     public User getByUsername(String username) {
         log.info("Getting user by username: {}", username);
-        return userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("Cannot find the user"));
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot find the user"));
     }
 
     @Transactional
     @Override
     public User update(Long id, UserModificationRequest userModificationRequest) {
         log.info("Getting user by id: {}", id);
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cannot find the user!"));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot find the user!"));
         log.info("Updating user: {}", user.getUsername());
         user.setUsername(userModificationRequest.getUsername());
-        user.setPasswordHash(BCrypt.hashpw(userModificationRequest.getPasswordHash(), BCrypt.gensalt(12)));
+        user.setPasswordHash(
+                BCrypt.hashpw(userModificationRequest.getPasswordHash(), BCrypt.gensalt(12)));
         user.setFirstName(userModificationRequest.getFirstName());
         user.setLastName(userModificationRequest.getLastName());
         user.setRole(userModificationRequest.getRole());
@@ -70,7 +73,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(String username) {
         log.info("Deleting user by username: {}", username);
-        User result = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("Cannot find the user!"));
+        User result = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot find the user!"));
         userRepository.delete(result);
     }
 
@@ -78,7 +82,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long id) {
         log.info("Deleting user by id: {}", id);
-        User result = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cannot find the user!"));
+        User result = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot find the user!"));
         userRepository.delete(result);
     }
 

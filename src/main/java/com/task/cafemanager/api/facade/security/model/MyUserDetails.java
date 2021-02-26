@@ -5,15 +5,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class MyUserDetails implements UserDetails {
 
-    private Long id;
-    private String username;
-    private String passwordHash;
-    private Role role;
+    private final Long id;
+    private final String username;
+    private final String passwordHash;
+    private final Role role;
 
     public MyUserDetails(Long id, String username, String passwordHash, Role role) {
         this.id = id;
@@ -28,7 +28,7 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override

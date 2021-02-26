@@ -14,13 +14,13 @@ import javax.persistence.Table;
 public class ProductInOrder {
 
     @Id
-    @SequenceGenerator(name = "productInOrder_sequence", sequenceName = "productInOrder_sequence")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "productInOrder_sequence")
+    @SequenceGenerator(name = "product_in_order_sequence", sequenceName = "product_in_order_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_in_order_sequence")
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-    @Column(name = "orderName")
-    private String orderName;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "amount")
     private int amount;

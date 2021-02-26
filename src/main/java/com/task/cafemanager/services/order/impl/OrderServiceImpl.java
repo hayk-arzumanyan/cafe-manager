@@ -35,9 +35,7 @@ public class OrderServiceImpl implements OrderService {
         final Table table = tableService.get(id);
         final boolean isOrderStatusStillOpen =
                 table.getOrders().stream()
-                        .filter(it -> it.getOrderStatus().equals(OrderStatus.OPEN))
-                        .findFirst()
-                        .isPresent();
+                        .anyMatch(order -> order.getOrderStatus().equals(OrderStatus.OPEN));
         if (isOrderStatusStillOpen) {
             throw new OrderStatusStillOpenException(
                     "Couldn't sign order for table: Table has Order with status OPENED");
@@ -85,9 +83,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = get(id);
         final boolean isOrderStatusStillOpen =
                 table.getOrders().stream()
-                        .filter(it -> it.getOrderStatus().equals(OrderStatus.OPEN))
-                        .findFirst()
-                        .isPresent();
+                        .anyMatch(it -> it.getOrderStatus().equals(OrderStatus.OPEN));
         if (isOrderStatusStillOpen) {
             throw new OrderStatusStillOpenException(
                     "Couldn't sign order for table: Order status still OPENED");

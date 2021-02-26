@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -74,15 +73,11 @@ public class TableServiceImpl implements TableService {
     }
 
     @Override
-    public Table assignTable(Long id, Long userId) {
+    public void assignTable(Long id, Long userId) {
         User user = userService.get(userId);
         Table table = get(id);
-//        if ((table.getUser().getId()) != null) {
-//            log.info("Table was already assigned. Now was changed to User {}.", userId);
-//        }
         table.setIsAssigned(true);
         table.setUser(user);
         tableRepository.save(table);
-        return table;
     }
 }
