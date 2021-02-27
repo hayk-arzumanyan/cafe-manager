@@ -38,7 +38,7 @@ public class ProductController {
                 ProductModificationRequest.class);
         final Product result = productService.create(createdProduct);
         final ProductDto resultDto = mapper.map(result, ProductDto.class);
-        log.info("Done creating product.");
+        log.info("Done creating Product with given request: {}", request);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
 
@@ -49,21 +49,21 @@ public class ProductController {
         log.debug("Getting product by given id {}", id);
         final Product dbProduct = productService.get(id);
         final ProductDto result = mapper.map(dbProduct, ProductDto.class);
-        log.info("Getting product done.");
+        log.info("Done getting product by given id {}", id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Updates Product by id.")
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('MANAGER')")
-    public ResponseEntity<ProductDto> update(@PathVariable Long id,
+    public ResponseEntity<ProductDto> update(@PathVariable("id") Long id,
                                              @RequestBody ProductModificationRequestDto request) {
         log.debug("Updating Product {} by given data: {}", id, request);
         final ProductModificationRequest updateProduct = mapper.map(request,
                 ProductModificationRequest.class);
         final Product product = productService.update(id, updateProduct);
         final ProductDto result = mapper.map(product, ProductDto.class);
-        log.info("Updating product done.");
+        log.info("Done updating Product {} by given data: {}", id, request);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -73,8 +73,6 @@ public class ProductController {
     public void delete(@PathVariable Long id) {
         log.debug("Deleting product by provided id: {}", id);
         productService.delete(id);
-        log.info("Deleting product done.");
+        log.info("Done deleting product by provided id: {}", id);
     }
-
-
 }

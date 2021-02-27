@@ -8,5 +8,4 @@ public class OrderModificationRequestDto {
 
     private String orderName;
     private OrderStatus orderStatus;
-
 }

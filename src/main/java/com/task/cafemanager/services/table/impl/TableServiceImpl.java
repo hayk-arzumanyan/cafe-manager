@@ -25,6 +25,23 @@ public class TableServiceImpl implements TableService {
         this.userService = userService;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Table get(Long id) {
+        log.info("Getting table by id: {}", id);
+        return tableRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Table not found."));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Table> getAll(Long userId) {
+        log.info("Getting all tables for user: {}", userId);
+        return tableRepository.findAllByUserId(userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Couldn't find the table for user."));
+    }
+
     @Transactional
     @Override
     public Table create(TableModificationRequest tableRequest) {
@@ -36,40 +53,14 @@ public class TableServiceImpl implements TableService {
         return tableRepository.save(table);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public Table get(Long id) {
-        log.info("Getting table by id: {}", id);
-        return tableRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Table not found."));
-    }
-
     @Transactional
     @Override
     public Table update(Long id, TableModificationRequest tableRequest) {
-        final Table table = tableRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cannot find the table."));
+        final Table table = get(id);
         table.setIsAssigned(tableRequest.getIsAssigned());
         table.setTableName(tableRequest.getTableName());
         table.setWaiterName(tableRequest.getWaiterName());
         return tableRepository.save(table);
-    }
-
-    @Transactional
-    @Override
-    public void delete(Long id) {
-        log.info("Deleting table by id {}", id);
-        final Table table = tableRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cannot find the table."));
-        tableRepository.delete(table);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<Table> getAll(Long id) {
-        log.info("Getting all tables for waiter: {}", id);
-        return tableRepository.findAllByUserId(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Couldn't find the waiter."));
     }
 
     @Override
@@ -79,5 +70,13 @@ public class TableServiceImpl implements TableService {
         table.setIsAssigned(true);
         table.setUser(user);
         tableRepository.save(table);
+    }
+
+    @Transactional
+    @Override
+    public void delete(Long id) {
+        log.info("Deleting table by id {}", id);
+        final Table table = get(id);
+        tableRepository.delete(table);
     }
 }

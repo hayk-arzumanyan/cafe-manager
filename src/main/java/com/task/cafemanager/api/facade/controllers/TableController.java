@@ -31,6 +31,28 @@ public class TableController {
         this.tableService = tableService;
     }
 
+    @ApiOperation(value = "Retrieves Table by id.")
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER')")
+    public ResponseEntity<TableDto> get(@PathVariable("id") Long id) {
+        log.debug("Getting table by given id {}", id);
+        final Table dbTable = tableService.get(id);
+        final TableDto result = mapper.map(dbTable, TableDto.class);
+        log.info("Getting table done.");
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Get all tables for current user.")
+    @GetMapping
+    @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
+    public ResponseEntity<List<TableDto>> getAll() {
+        final Long id = AuthenticationUtils.getUserId();
+        log.debug("Getting all tables for: {}", id);
+        final List<Table> tables = tableService.getAll(id);
+        final List<TableDto> result = mapper.mapAsList(tables, TableDto.class);
+        log.info("Getting all tables done.");
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
     @ApiOperation(value = "Create Cafe Table by provided request.")
     @PostMapping
@@ -42,17 +64,6 @@ public class TableController {
         final Table createdTable = tableService.create(tableRequest);
         final TableDto result = mapper.map(createdTable, TableDto.class);
         log.info("Table creation done.");
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "Retrieves Table by id.")
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER')")
-    public ResponseEntity<TableDto> get(@PathVariable("id") Long id) {
-        log.debug("Getting user by given id {}", id);
-        Table dbTable = tableService.get(id);
-        TableDto result = mapper.map(dbTable, TableDto.class);
-        log.info("Getting table done.");
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -76,9 +87,8 @@ public class TableController {
     public void assignUser(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
         log.debug("Assigning table {} to User {}", id, userId);
         tableService.assignTable(id, userId);
-
+        log.info("Done assigning table {} to User {}", id, userId);
     }
-
 
     @ApiOperation(value = "Delete Table by provided id.")
     @DeleteMapping("/{id}")
@@ -88,18 +98,4 @@ public class TableController {
         tableService.delete(id);
         log.info("Deleting table done.");
     }
-
-    @ApiOperation(value = "Get all tables for current waiter.")
-    @GetMapping("/getAllTables")
-    @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
-    public ResponseEntity<List<TableDto>> getAllTables() {
-        final Long id = AuthenticationUtils.getUserId();
-        log.debug("Getting all tables for: {}", id);
-        final List<Table> tables = tableService.getAll(id);
-        final List<TableDto> result = mapper.mapAsList(tables, TableDto.class);
-        log.info("Getting all tables done.");
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-
 }

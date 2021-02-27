@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Api(tags = {"Products In Order"})
-@RequestMapping(path = "/tables/orders/productInOrder")
+@RequestMapping(path = "/productsInOrder")
 @RestController
 public class ProductInOrderController {
 
@@ -30,55 +30,59 @@ public class ProductInOrderController {
     }
 
     @ApiOperation(value = "Create and sign ProductInOrder by provided request.")
-    @PostMapping("/assign/{orderId}/{productId}")
+    @PostMapping
     @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
-    public ResponseEntity<ProductInOrderDto> create(@PathVariable("orderId") Long orderId,
-                                                    @PathVariable(
-                                                            "productId") Long productId,
-                                                    @RequestBody ProductInOrderModificationRequestDto request) {
-        log.debug("Creating ProductInOrder assigned to Order by id {} and to Product by id {} " +
-                "with given request: {}", orderId, productId, request);
+    public ResponseEntity<ProductInOrderDto> create(
+            @RequestBody ProductInOrderModificationRequestDto request) {
+        final Long orderId = request.getOrderId();
+        final Long productId = request.getProductId();
+        log.debug("Creating Product {} to Order {} with given request {}", productId, orderId,
+                request);
         final ProductInOrderModificationRequest createdProductInOrder = mapper.map(request,
                 ProductInOrderModificationRequest.class);
         final ProductInOrder result =
-                productInOrderService.create(orderId, productId, createdProductInOrder);
+                productInOrderService.create(createdProductInOrder);
         final ProductInOrderDto resultDto = mapper.map(result, ProductInOrderDto.class);
-        log.info("Done creating product in order.");
+
+        log.debug("Done creating Product {} to Order {} with given request {}", productId, orderId,
+                request);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Retrieves Product by id.")
+    @ApiOperation(value = "Retrieves ProductInOrder by id.")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
     public ResponseEntity<ProductInOrderDto> get(@PathVariable("id") Long id) {
         log.debug("Getting product in order by given id {}", id);
         final ProductInOrder dbProductInOrder = productInOrderService.get(id);
         final ProductInOrderDto result = mapper.map(dbProductInOrder, ProductInOrderDto.class);
-        log.info("Getting product in order done.");
+
+        log.debug("Done getting product in order by given id {}", id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Updates ProductInOrder by id.")
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
-    public ResponseEntity<ProductInOrderDto> update(@PathVariable Long id,
-                                             @RequestBody ProductInOrderModificationRequestDto request) {
+    public ResponseEntity<ProductInOrderDto> update(@PathVariable("id") Long id,
+                                                    @RequestBody ProductInOrderModificationRequestDto request) {
         log.debug("Updating ProductInOrder {} by given data: {}", id, request);
         final ProductInOrderModificationRequest updateProductInOrder = mapper.map(request,
                 ProductInOrderModificationRequest.class);
-        final ProductInOrder productInOrder = productInOrderService.update(id, updateProductInOrder);
+        final ProductInOrder productInOrder =
+                productInOrderService.update(id, updateProductInOrder);
         final ProductInOrderDto result = mapper.map(productInOrder, ProductInOrderDto.class);
-        log.info("Updating product done.");
+
+        log.debug("Done updating ProductInOrder {} by given data: {}", id, request);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete ProductInOrder by provided id.")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable("id") Long id) {
         log.debug("Deleting product in order by provided id: {}", id);
         productInOrderService.delete(id);
-        log.info("Deleting product in order done.");
+        log.debug("Done deleting product in order by provided id: {}", id);
     }
-
 }

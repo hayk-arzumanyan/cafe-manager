@@ -14,7 +14,7 @@ public interface TableService {
 
     void delete(Long id);
 
-    List<Table> getAll(Long id);
+    List<Table> getAll(Long userId);
 
     void assignTable(Long id, Long userId);
 }

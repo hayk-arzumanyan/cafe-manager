@@ -6,15 +6,13 @@ import com.task.cafemanager.services.order.model.OrderModificationRequest;
 import java.util.List;
 
 public interface OrderService {
-    Order create(Long id, OrderModificationRequest orderModificationRequest);
-
-    Order get(Long id);
-
-    Order update(Long id, OrderModificationRequest request);
-
-    void delete(Long id);
-
-    Order assignOrder(Long id, Long tableId);
+    Order get(Long tableId, Long id);
 
     List<Order> getAll(Long tableId);
+
+    Order create(Long id, OrderModificationRequest orderModificationRequest);
+
+    Order update(Long tableId, Long id, OrderModificationRequest request);
+
+    void delete(Long tableId, Long id);
 }

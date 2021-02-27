@@ -4,7 +4,8 @@ import com.task.cafemanager.data.entities.User;
 import com.task.cafemanager.data.entities.enums.Role;
 import com.task.cafemanager.exceptions.ResourceNotFoundException;
 import com.task.cafemanager.services.AbstractIntegrationTest;
-import com.task.cafemanager.services.user.model.UserModificationRequest;
+import com.task.cafemanager.services.user.model.UserCreationRequest;
+import com.task.cafemanager.services.user.model.UserUpdateRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,7 +19,7 @@ class UserServiceIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void create() {
-        UserModificationRequest request = new UserModificationRequest("username", "firstName",
+        UserCreationRequest request = new UserCreationRequest("username", "firstName",
                 "lastName", "pass", Role.MANAGER);
 
         final User user = userService.create(request);
@@ -32,8 +33,8 @@ class UserServiceIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void update() {
-        UserModificationRequest creationRequest =
-                new UserModificationRequest("username", "firstName",
+        UserCreationRequest creationRequest =
+                new UserCreationRequest("username", "firstName",
                         "lastName", "pass", Role.MANAGER);
 
         User createdUser = userService.create(creationRequest);
@@ -44,9 +45,11 @@ class UserServiceIntegrationTest extends AbstractIntegrationTest {
                 .ignoringFields("id", "passwordHash", "tables")
                 .isEqualTo(resultBefore);
 
-        UserModificationRequest updateRequest = new UserModificationRequest("username_edited",
+        UserUpdateRequest updateRequest = new UserUpdateRequest(
                 "firstName_edited",
-                "lastName_edited", "pass_edited", Role.WAITER);
+                "lastName_edited",
+                Role.WAITER
+        );
         User updatedUser = userService.update(createdUser.getId(), updateRequest);
         assertThat(updatedUser).isNotNull();
         User resultAfter = userService.get(updatedUser.getId());
@@ -57,13 +60,13 @@ class UserServiceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void get() {
+    void getUserNotFound() {
         assertThatExceptionOfType(ResourceNotFoundException.class)
                 .isThrownBy(() -> userService.get(1L));
     }
 
     @Test
-    void delete() {
+    void deleteUserNotFound() {
         assertThatExceptionOfType(ResourceNotFoundException.class)
                 .isThrownBy(() -> userService.delete(1L));
     }

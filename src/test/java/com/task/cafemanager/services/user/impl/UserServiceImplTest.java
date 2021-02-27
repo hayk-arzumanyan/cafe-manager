@@ -5,7 +5,8 @@ import com.task.cafemanager.data.entities.User;
 import com.task.cafemanager.data.entities.enums.Role;
 import com.task.cafemanager.data.repositories.UserRepository;
 import com.task.cafemanager.services.AbstractUnitTest;
-import com.task.cafemanager.services.user.model.UserModificationRequest;
+import com.task.cafemanager.services.user.model.UserCreationRequest;
+import com.task.cafemanager.services.user.model.UserUpdateRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -33,7 +34,7 @@ class UserServiceImplTest extends AbstractUnitTest {
     @Test
     void create() {
         String username = "username";
-        UserModificationRequest request = new UserModificationRequest(username, "firstName",
+        UserCreationRequest request = new UserCreationRequest(username, "firstName",
                 "lastName", "pass", Role.MANAGER);
 
         when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
@@ -49,7 +50,7 @@ class UserServiceImplTest extends AbstractUnitTest {
     @Test
     void create_userExists() {
         String username = "username";
-        UserModificationRequest request = new UserModificationRequest(username, "firstName",
+        UserCreationRequest request = new UserCreationRequest(username, "firstName",
                 "lastName", "pass", Role.MANAGER);
         User user = new User();
 
@@ -59,7 +60,6 @@ class UserServiceImplTest extends AbstractUnitTest {
                 .isThrownBy(() -> userService.create(request));
 
         verify(userRepository).findByUsername(username);
-
     }
 
     @Test
@@ -77,8 +77,8 @@ class UserServiceImplTest extends AbstractUnitTest {
     @Test
     void update() {
         final Long id = 1L;
-        UserModificationRequest request = new UserModificationRequest("username", "firstName",
-                "lastName", "pass", Role.MANAGER);
+        UserUpdateRequest request = new UserUpdateRequest("firstName",
+                "lastName", Role.MANAGER);
 
         when(userRepository.findById(id)).thenReturn(Optional.of(new User()));
         when(userRepository.save(any(User.class))).thenAnswer(it -> it.getArgument(0));
@@ -88,7 +88,6 @@ class UserServiceImplTest extends AbstractUnitTest {
 
         verify(userRepository).findById(id);
         verify(userRepository).save(any(User.class));
-
     }
 
     @Test
@@ -103,7 +102,5 @@ class UserServiceImplTest extends AbstractUnitTest {
 
         verify(userRepository).findById(id);
         verify(userRepository).delete(user);
-
-
     }
 }

@@ -19,7 +19,7 @@ import java.util.List;
 
 @Slf4j
 @Api(tags = {"Orders"})
-@RequestMapping(path = "/tables/orders")
+@RequestMapping(path = "/tables/{tableId}/orders")
 @RestController
 public class OrderController {
 
@@ -32,61 +32,20 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @ApiOperation(value = "Create table order by provided request.")
-    @PostMapping("/{tableId}")
-    @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
-    public ResponseEntity<OrderDto> create(@PathVariable Long tableId,
-                                           @RequestBody OrderModificationRequestDto request) {
-        log.debug("Creating order for table {} by request: {}", tableId, request);
-        final OrderModificationRequest orderRequest = mapper.map(request, OrderModificationRequest.class);
-        final Order createdOrder = orderService.create(tableId, orderRequest);
-        OrderDto result = mapper.map(createdOrder, OrderDto.class);
-        log.info("Creating done.");
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "Edit order by provided request.")
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
-    public ResponseEntity<OrderDto> update(@PathVariable Long id, @RequestBody OrderModificationRequestDto request) {
-        log.debug("Updating table order by id: {}", id);
-        final OrderModificationRequest updateOrder = mapper.map(request, OrderModificationRequest.class);
-        final Order dbOrder = orderService.update(id, updateOrder);
-        final OrderDto result = mapper.map(dbOrder, OrderDto.class);
-        log.info("Updating done.");
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
     @ApiOperation(value = "Get order by provided id.")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
-    public ResponseEntity<OrderDto> get(@PathVariable Long id) {
+    public ResponseEntity<OrderDto> get(@PathVariable("tableId") Long tableId,
+                                        @PathVariable("id") Long id) {
         log.debug("Getting order by id: {}", id);
-        final Order order = orderService.get(id);
+        final Order order = orderService.get(tableId, id);
         final OrderDto result = mapper.map(order, OrderDto.class);
-        log.info("Getting done.");
+        log.info("Done getting order by id: {}", id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Delete order by provided id.")
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
-    public void delete(@PathVariable Long id) {
-        log.debug("Deleting order by id {}", id);
-        orderService.delete(id);
-        log.info("Deleting done.");
-    }
-
-    @ApiOperation(value = "Assign Order to Table.")
-    @PutMapping("{id}/assign/{tableId}")
-    @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
-    public void assignOrder(@PathVariable("id") Long id, @PathVariable("tableId") Long tableId) {
-        log.debug("Assigning order by id {} to table by id {}.", id, tableId);
-        orderService.assignOrder(id, tableId);
-    }
-
     @ApiOperation(value = "Get all orders for corresponding table.")
-    @GetMapping("/getAllOrders/{tableId}")
+    @GetMapping
     @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
     public ResponseEntity<List<OrderDto>> getAllOrders(@PathVariable("tableId") Long tableId) {
         log.debug("Getting all orders for table: {}", tableId);
@@ -97,5 +56,42 @@ public class OrderController {
 
     }
 
+    @ApiOperation(value = "Create table order by provided request.")
+    @PostMapping
+    @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
+    public ResponseEntity<OrderDto> create(@PathVariable("tableId") Long tableId,
+                                           @RequestBody OrderModificationRequestDto request) {
+        log.debug("Creating order for table {} by request: {}", tableId, request);
+        final OrderModificationRequest orderRequest =
+                mapper.map(request, OrderModificationRequest.class);
+        final Order createdOrder = orderService.create(tableId, orderRequest);
+        final OrderDto result = mapper.map(createdOrder, OrderDto.class);
+        log.info("Done creating order for table {} by request: {}", tableId, request);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
+    @ApiOperation(value = "Edit order by provided request.")
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
+    public ResponseEntity<OrderDto> update(@PathVariable("tableId") Long tableId,
+                                           @PathVariable("id") Long id,
+                                           @RequestBody OrderModificationRequestDto request) {
+        log.debug("Updating table order by id: {}", id);
+
+        final OrderModificationRequest updateOrder =
+                mapper.map(request, OrderModificationRequest.class);
+        final Order dbOrder = orderService.update(tableId, id, updateOrder);
+        final OrderDto result = mapper.map(dbOrder, OrderDto.class);
+        log.info("Done updating table order by id: {}", id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Delete order by provided id.")
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER', 'WAITER')")
+    public void delete(@PathVariable("tableId") Long tableId, @PathVariable("id") Long id) {
+        log.debug("Deleting order by id {}", id);
+        orderService.delete(tableId, id);
+        log.info("Done deleting order by id {}", id);
+    }
 }

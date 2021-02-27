@@ -11,7 +11,8 @@ public class ErrorDetails {
     private String message;
 
     @JsonCreator
-    public ErrorDetails(@JsonProperty("statusCode") final HttpStatus statusCode, @JsonProperty("message") final String message) {
+    public ErrorDetails(@JsonProperty("statusCode") final HttpStatus statusCode,
+                        @JsonProperty("message") final String message) {
         this.statusCode = statusCode;
         this.message = message;
     }

@@ -31,7 +31,7 @@ public class ProductInOrder {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Product product;
 
     @ToString.Exclude

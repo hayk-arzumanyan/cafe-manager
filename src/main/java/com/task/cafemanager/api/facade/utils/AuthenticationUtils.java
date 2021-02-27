@@ -1,13 +1,12 @@
 package com.task.cafemanager.api.facade.utils;
 
 import com.task.cafemanager.api.facade.security.model.MyUserDetails;
+import lombok.experimental.UtilityClass;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public final class AuthenticationUtils {
-    private AuthenticationUtils() {
-        throw new IllegalAccessError("Utility class cannot be instantiated.");
-    }
+@UtilityClass
+public class AuthenticationUtils {
 
     public static Long getUserId() {
         final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

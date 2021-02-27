@@ -15,9 +15,16 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
-    public ProductServiceImpl(
-            ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Product get(Long id) {
+        log.info("Getting product by id: {}", id);
+        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
+                "Cannot find product."));
     }
 
     @Transactional
@@ -37,14 +44,6 @@ public class ProductServiceImpl implements ProductService {
         log.info("Updating product {}:", product.getProductName());
         product.setProductName(modificationRequest.getProductName());
         return productRepository.save(product);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Product get(Long id) {
-        log.info("Getting product by id: {}", id);
-        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
-                "Cannot find product."));
     }
 
     @Transactional

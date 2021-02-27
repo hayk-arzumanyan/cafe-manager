@@ -1,20 +1,15 @@
 package com.task.cafemanager.services.user;
 
 import com.task.cafemanager.data.entities.User;
-import com.task.cafemanager.services.user.model.UserModificationRequest;
+import com.task.cafemanager.services.user.model.UserCreationRequest;
+import com.task.cafemanager.services.user.model.UserUpdateRequest;
 
 public interface UserService {
-    User create(UserModificationRequest user);
-
     User get(Long id);
 
-    User getByUsername(String username);
+    User create(UserCreationRequest request);
 
-    User update(Long id, UserModificationRequest userModificationRequest);
-
-    void delete(String username);
+    User update(Long id, UserUpdateRequest request);
 
     void delete(Long id);
-
-    User save(User user);
 }

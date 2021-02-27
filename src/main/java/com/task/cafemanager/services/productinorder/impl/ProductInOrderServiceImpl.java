@@ -15,13 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-public class ProductInOrderImpl implements ProductInOrderService {
+public class ProductInOrderServiceImpl implements ProductInOrderService {
 
     private final ProductInOrderRepository productInOrderRepository;
     private final ProductService productService;
     private final OrderService orderService;
 
-    public ProductInOrderImpl(
+    public ProductInOrderServiceImpl(
             ProductInOrderRepository productInOrderRepository,
             ProductService productService,
             OrderService orderService) {
@@ -32,11 +32,12 @@ public class ProductInOrderImpl implements ProductInOrderService {
 
     @Transactional
     @Override
-    public ProductInOrder create(Long orderId,
-                                 Long productId,
-                                 ProductInOrderModificationRequest modificationRequest) {
+    public ProductInOrder create(ProductInOrderModificationRequest modificationRequest) {
+        final Long tableId = modificationRequest.getTableId();
+        final Long orderId = modificationRequest.getOrderId();
+        final Long productId = modificationRequest.getProductId();
         log.info("Creating ProductInOrder by Order id {} and Product id {}", orderId, productId);
-        final Order order = orderService.get(orderId);
+        final Order order = orderService.get(tableId, orderId);
         final Product product = productService.get(productId);
         ProductInOrder productInOrder = new ProductInOrder();
         productInOrder.setName(modificationRequest.getName());
@@ -50,13 +51,18 @@ public class ProductInOrderImpl implements ProductInOrderService {
     @Transactional
     @Override
     public ProductInOrder update(Long id, ProductInOrderModificationRequest modificationRequest) {
+        final Long tableId = modificationRequest.getTableId();
+        final Long orderId = modificationRequest.getOrderId();
+        final Long productId = modificationRequest.getProductId();
         log.info("Getting productInOrder by id: {}", id);
-        ProductInOrder productInOrder =
-                productInOrderRepository.findById(id).orElseThrow(
-                        () -> new ResourceNotFoundException("Cannot find product in order."));
+        final Order order = orderService.get(tableId, orderId);
+        final Product product = productService.get(productId);
+        ProductInOrder productInOrder = get(id);
         productInOrder.setName(modificationRequest.getName());
         productInOrder.setAmount(modificationRequest.getAmount());
         productInOrder.setStatus(modificationRequest.getStatus());
+        productInOrder.setOrder(order);
+        productInOrder.setProduct(product);
         return productInOrderRepository.save(productInOrder);
     }
 
@@ -74,17 +80,5 @@ public class ProductInOrderImpl implements ProductInOrderService {
         log.info("Deleting product in order by id: {}", id);
         final ProductInOrder result = get(id);
         productInOrderRepository.delete(result);
-    }
-
-    @Transactional
-    @Override
-    public void assignToProduct(Long id, Long productId) {
-
-    }
-
-    @Transactional
-    @Override
-    public void assignToOrder(Long id, Long orderId) {
-
     }
 }
